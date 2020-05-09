@@ -46,15 +46,15 @@ for (mod in c('pb','dl','pgdl')){
   mod_data <- filter(eval_data, model_type == mod)
   mod_profiles <- unique(mod_data$n_prof)
   for (mod_profile in mod_profiles){
-    ._d <- filter(mod_data, n_prof == mod_profile) %>% summarize(y0 = min(rmse), y1 = max(rmse), col = unique(col))
+    d <- filter(mod_data, n_prof == mod_profile) %>% summarize(y0 = min(rmse), y1 = max(rmse), col = unique(col))
     x_pos <- offsets %>% filter(n_prof == mod_profile) %>% pull(!!mod) + mod_profile
-    lines(c(x_pos, x_pos), c(._d$y0, ._d$y1), col = ._d$col, lwd = 2.5)
+    lines(c(x_pos, x_pos), c(d$y0, d$y1), col = d$col, lwd = 2.5)
   }
-  ._d <- group_by(mod_data, n_prof) %>% summarize(y = mean(rmse), col = unique(col), pch = unique(pch)) %>%
+  d <- group_by(mod_data, n_prof) %>% summarize(y = mean(rmse), col = unique(col), pch = unique(pch)) %>%
     rename(x = n_prof) %>% arrange(x)
   
-  lines(._d$x + tail(offsets[[mod]], nrow(._d)), ._d$y, col = ._d$col[1], lty = 'dashed')
-  points(._d$x + tail(offsets[[mod]], nrow(._d)), ._d$y, pch = ._d$pch[1], col = ._d$col[1], bg = 'white', lwd = 2.5, cex = 1.5)
+  lines(d$x + tail(offsets[[mod]], nrow(d)), d$y, col = d$col[1], lty = 'dashed')
+  points(d$x + tail(offsets[[mod]], nrow(d)), d$y, pch = d$pch[1], col = d$col[1], bg = 'white', lwd = 2.5, cex = 1.5)
   
 }
 
